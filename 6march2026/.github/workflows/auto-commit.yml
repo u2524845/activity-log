@@ -1,0 +1,27 @@
+name: Auto Commit
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # every hour
+  workflow_dispatch:       # allow manual trigger
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Make a commit
+        run: |
+          git config user.name "u2524845"
+          git config user.email "u2524845@uel.ac.uk"
+          echo "$(date -u)" >> activity_log.txt
+          git add activity_log.txt
+          git commit -m "chore: activity update $(date -u '+%Y-%m-%d %H:%M:%S')"
+          git push
